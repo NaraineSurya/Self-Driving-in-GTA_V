@@ -1,17 +1,15 @@
-import tkinter as tk
+import numpy as np
+from PIL import ImageGrab
+import cv2
+import time
 
-# This code provides your screen size in the bounding box value
+last_time = time.time()
 
-def get_screen_size():
-    root = tk.Tk()
-    # Hide the root window
-    root.withdraw()
-    # Get the screen width and height
-    width = root.winfo_screenwidth()
-    height = root.winfo_screenheight()
-    # Destroy the root window
-    root.destroy()
-    return {'top': 0, 'left': 0, 'width': width, 'height': height}
-
-bounding_box = get_screen_size()
-print(bounding_box)
+while(True):
+    screen = np.array(ImageGrab.grab(bbox=(0,0,1920,1000)) )
+    print(f"Loop took seconds {time.time()-last_time}")
+    last_time = time.time()
+    cv2.imshow('window', cv2.cvtColor(np.array(screen), cv2.COLOR_BGR2RGB))
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        cv2.destroyAllWindows()
+        break
