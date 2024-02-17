@@ -5,6 +5,12 @@ from PIL import Image
 import time
 from directkeys import releaseKey,pressKey , W , S ,A , D 
 
+def draw_line(img, lines):
+    for line in lines:
+        coords = line[0]
+        cv2.line(img, (coords[0],coords[1]), (coords[2],coords[3]), (255,255,255), 3)
+
+
 def roi(img, vertices):
     mask = np.zeros_like(img)
     vertices = [vertices]  # Convert vertices to a list containing one array
@@ -17,19 +23,17 @@ def process_img(original_image):
     img = np.array(original_image)
     processed_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed_image = cv2.Canny(processed_image, threshold1=200 , threshold2=300)
+    processed_image = cv2.GaussianBlur(processed_image, (3,3), 0)
     vertices = np.array([[80,1000], [80,500], [500,300], [1200,300], [1840,500], [1840,1000]])     #fvhbfvibvfhvbrfvuhvbfuhv
     # vertices = np.array([[10,500], [10,300], [300,200], [500,200], [800,300], [800,500]])     sfvhf  vfjhv df jhd sfvfbdgbsvs
     processed_image = roi(processed_image, vertices)
+    lines = cv2.HoughLinesP(processed_image, 1, np.pi/180, 180, np.array([]), 100, 5)
+    draw_line(processed_image, lines)
     return processed_image
-# # Countdown 
+# Countdown 
 # for i in list(range(4))[:: -1]:
 #     print(i+1)
 #     time.sleep(1)
-
-# 1440 W
-# 900 h
-
-
 
 # Code provides more than 10 frames in a second  
 def main() :
