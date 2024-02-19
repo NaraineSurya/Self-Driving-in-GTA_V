@@ -86,7 +86,7 @@ def draw_lanes(img, lines, color =[0,255,255], thickness =3):
         l1_x1, l1_y1, l1_x2, l1_y2 = average_lane(final_lanes[lane1_id])
         l2_x1, l2_y1, l2_x2, l2_y2 = average_lane(final_lanes[lane2_id])
 
-        return [l1_x1, l1_y1, l1_x2, l1_y2] , [l2_x1, l2_y1, l2_x2, l2_y2]
+        return [l1_x1, l1_y1, l1_x2, l1_y2] , [l2_x1, l2_y1, l2_x2, l2_y2], lane1_id, lane2_id
     except Exception as e:
         print(str(e))
 
@@ -117,8 +117,9 @@ def process_img(original_image):
     processed_image = roi(processed_image, vertices)
     # Edges
     lines = cv2.HoughLinesP(processed_image, 1, np.pi/180, 180, np.array([]), 100, 5)
+    m1,m2 = 0,0
     try: 
-        l1,l2 = draw_lanes(img,lines)
+        l1,l2,m1,m2 = draw_lanes(img,lines)
         cv2.line(img, (l1[0], l1[1]), (l1[2], l1[3]), (0,255,0), 30)
         cv2.line(img, (l2[0], l2[1]), (l2[2], l2[3]), (0,255,0), 30)
     except Exception as e:
@@ -135,20 +136,52 @@ def process_img(original_image):
     except Exception as e :
         pass
     
-    return processed_image, img
+    return processed_image, img, m1, m2
+
+def straight():
+    pressKey(W)
+    releaseKey(A)
+    releaseKey(D)
+
+def left():
+    pressKey(A)
+    releaseKey(W)
+    releaseKey(D)
+
+def right():
+    pressKey(D)
+    releaseKey(A)
+    releaseKey(W)
+
+def slow():
+    releaseKey(W)
+    releaseKey(A)
+    releaseKey(D)
+
+for i in list(range(4))[::-1]:
+    print(i+1)
+    time.sleep(1)
+
 
     
 def main() :
     last_time = time.time()
     while(True):
         screen = np.array(ImageGrab.grab(bbox=(0,0,1920,1100)) )
-        processed_img, original_img = process_img(screen)
-        # new_screen = process_img(screen)
-        cv2.imshow('processed_image', processed_img)  # Display processed image
+        processed_img, original_img, m1, m2 = process_img(screen)
+        # cv2.imshow('processed_image', processed_img)  # Display processed image
         cv2.imshow('original_image', cv2.cvtColor(original_img,cv2.COLOR_BGR2RGB))  # Display original image
         print(f"Loop took seconds {time.time()-last_time}")
         last_time = time.time()
         # cv2.imshow('window', cv2.cvtColor(np.array(screen), cv2.COLOR_BGR2RGB))
+
+        if m1 < 0 and m2 < 0:
+            right()
+        elif m1 > 0 and m2 >0:
+            left()
+        else :
+            straight()
+
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
