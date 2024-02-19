@@ -1,106 +1,56 @@
 import numpy as np
 import cv2
-from mss import mss
 import time
-from directkeys import releaseKey,pressKey ,W ,S ,A ,D  
-from numpy import ones,vstack
-from numpy.linalg import lstsq 
 from grabscreen import grab_screen
-from draw_lanes import draw_lanes
 from getkeys import key_check
+import os
 
-# Finds the region of interest in the screen
-        # Creating blank mask
-        # Convert vertices to a list containing one array
-        # Filling piels inside the polygon defined by vertices with fill color
-        # returning pixels which are non zero 
-def roi(img, vertices):
-    mask = np.zeros_like(img)
-    vertices = [vertices]
-    cv2.fillPoly(mask, vertices, 255)
-    masked = cv2.bitwise_and(img, mask)
-    return masked
 
-# Coverts the images into black and gray using canny()
-    # convert to gray
-    # edge detection 
-    # blurring the image
-    # region of interest
-def process_img(original_image):
-    img = np.array(original_image)
-    processed_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    processed_image = cv2.Canny(processed_image, threshold1=200 , threshold2=300)
-    processed_image = cv2.GaussianBlur(processed_image, (3,3), 0)
-    vertices = np.array([[80,1000], [80,500], [500,300], [1200,300], [1840,500], [1840,1000]], np.int32)   
-    processed_image = roi(processed_image, vertices)
-    lines = cv2.HoughLinesP(processed_image, 1, np.pi/180, 180, np.array([]), 1000, 5)
-    m1,m2 = 0,0
-    try: 
-        l1,l2,m1,m2 = draw_lanes(img,lines)
-        cv2.line(img, (l1[0], l1[1]), (l1[2], l1[3]), (0,255,0), 30)
-        cv2.line(img, (l2[0], l2[1]), (l2[2], l2[3]), (0,255,0), 30)
-    except Exception as e:
-        print (str(e))
-        pass
+def keys_to_output(keys):
+    output = [0,0,0]
 
-    try:
-        for coords in lines:
-            coords = coords[0]
-            try :
-                cv2.line(processed_image, (coords[0], coords[1]), (coords[2], coords[3]), (255,255,255), 3)
-            except Exception as e:
-                print(str(e))
-    except Exception as e :
-        pass
+    if 'A' in keys :
+        output[0] = 1
+    elif 'D' in keys :
+        output[2] = 1
+    else :
+        output[1] = 1
     
-    return processed_image, img, m1, m2
+    return output
 
+file_name = 'training_data.npy'
 
-def straight():
-    pressKey(W)
-    releaseKey(A)
-    releaseKey(D)
+if os.path.isfile(file_name):
+    print("File exists, loading previous data")
+    training_data = list(np.load(file_name))
+else :
+    print("file does not exist , starting fresh")
+    training_data = []
 
-def left():
-    pressKey(A)
-    releaseKey(W)
-    releaseKey(D)
-
-def right():
-    pressKey(D)
-    releaseKey(A)
-    releaseKey(W)
-
-def slow():
-    releaseKey(W)
-    releaseKey(A)
-    releaseKey(D)
-
-for i in list(range(4))[::-1]:
-    print(i+1)
-    time.sleep(1)
 
 def main():
+
+    for i in list(range(4))[::-1]:
+        print(i+1)
+        time.sleep(1)
+    # last_time = time.time()
     while True:
-        bounding_box = {'top': 0, 'left': 0, 'width':  1920, 'height': 1100}
-        last_time = time.time()
-        sct = mss()
-        sct_img = sct.grab(bounding_box)
-        processed_img, original_img = process_img(sct_img)  # Separate processed and original images
-        # cv2.imshow('processed_image', processed_img)  # Display processed image
-        cv2.imshow('original_image', original_img)  # Display original image
-        print(f"Loop took seconds {time.time()-last_time}")
-        last_time = time.time()
+        # bounding_box = {'top': 0, 'left': 0, 'width':  1920, 'height': 1100}
+        screen = grab_screen(region=(0,0,1920,1100))
+        screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+        screen = cv2.resize(screen, (80,60))
+        # screen = np.expand_dims(screen, axis=-1)  # Expand dimensions to make it 3D
+        keys = key_check()
+        output = keys_to_output(keys)
+        output = np.array(output)  # Convert output to numpy array
+        print("Screen shape:", screen.shape, "Screen type:", type(screen))
+        print("Output:", output)
+        training_data.append([screen, output])
+        # print(f"Loop took seconds {time.time()-last_time}")
+        # last_time = time.time()
 
-        if m1 < 0 and m2 < 0:
-            right()
-        elif m1 > 0 and m2 >0:
-            left()
-        else :
-            straight()
-
-        if (cv2.waitKey(1) & 0xFF) == ord('q'):
-            cv2.destroyAllWindows()
-            break
+        if len(training_data) % 500 == 0:
+            print(len(training_data))
+            np.save(file_name, training_data)
 
 main()
