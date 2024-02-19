@@ -3,7 +3,12 @@ import cv2
 from mss import mss
 from PIL import Image
 import time
-from directkeys import releaseKey,pressKey , W , S ,A , D 
+from directkeys import releaseKey,pressKey , W , S ,A , D  
+from statistics import mean
+from numpy import ones,vstack
+
+from numpy.linalg import lstsq 
+
 
 def draw_line(img, lines):
     for line in lines:
@@ -14,6 +19,7 @@ def draw_lanes(img, lines, color =[0,255,255], thickness =3):
     # if fails go with default lines
     try :
         # finds max y value for a lane marker (which will not be same always)
+        lanes = []
         ys = []
         for i in lanes :
             for ii in i:
@@ -27,8 +33,8 @@ def draw_lanes(img, lines, color =[0,255,255], thickness =3):
             for xyxy in i:
                 x_coords = (xyxy[0],xyxy[2])
                 y_coords = (xyxy[1],xyxy[3])
-                A = vstak([x_coords,ones(len(x_coords))]).T
-                m,b = lstsq(A , y_coords)[0]
+                A = vstack([x_coords,ones(len(x_coords))]).T
+                m,b = np.linalg.lstsq(A , y_coords)[0]
 
                 x1 = (min_y-b) / m
                 x2 = (max_y-b) / m
@@ -90,33 +96,36 @@ def draw_lanes(img, lines, color =[0,255,255], thickness =3):
     except Exception as e:
         print(str(e))
 
+
+# Finds the region of interest in the screen
+        # Creating blank mask
+        # Convert vertices to a list containing one array
+        # Filling piels inside the polygon defined by vertices with fill color
+        # returning pixels which are non zero 
 def roi(img, vertices):
-    # Creating blank mask
     mask = np.zeros_like(img)
-    vertices = [vertices]  # Convert vertices to a list containing one array
-    # Filling piels inside the polygon defined by vertices with fill color
+    vertices = [vertices]
     cv2.fillPoly(mask, vertices, 255)
-    # returning pixels which are non zero  
     masked = cv2.bitwise_and(img, mask)
     return masked
     
 # Coverts the images into black and gray using canny()
+    # convert to gray
+    # edge detection 
+    # blurring the image
+    # region of interest
 def process_img(original_image):
     img = np.array(original_image)
-    # convert to gray
     processed_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # edge detection 
     processed_image = cv2.Canny(processed_image, threshold1=200 , threshold2=300)
-    # blurring the image
     processed_image = cv2.GaussianBlur(processed_image, (3,3), 0)
-    vertices = np.array([[80,1000], [80,500], [500,300], [1200,300], [1840,500], [1840,1000]])    
-    # region of interest   
+    vertices = np.array([[80,1000], [80,500], [500,300], [1200,300], [1840,500], [1840,1000]], np.int32)   
     processed_image = roi(processed_image, vertices)
     lines = cv2.HoughLinesP(processed_image, 1, np.pi/180, 180, np.array([]), 100, 5)
     try: 
-        l1,l2 = draw_lanes(original_image,lines)
-        cv2.line(original_image, (l1[0], l1[1]), (l1[2], l1[3]), [0,255,0], 30)
-        cv2.line(original_image, (l2[0], l2[1]), (l2[2], l2[3]), [0,255,0], 30)
+        l1,l2 = draw_lanes(img,lines)
+        cv2.line(img, (l1[0], l1[1]), (l1[2], l1[3]), (0,255,0), 30)
+        cv2.line(img, (l2[0], l2[1]), (l2[2], l2[3]), (0,255,0), 30)
     except Exception as e:
         print (str(e))
         pass
@@ -125,44 +134,19 @@ def process_img(original_image):
         for coords in lines:
             coords = coords[0]
             try :
-                cv2.line(processed_image, (coords[0], coords[1]), (coords[2], coords[3]))
-            
+                cv2.line(processed_image, (coords[0], coords[1]), (coords[2], coords[3]), (255,255,255), 3)
             except Exception as e:
                 print(str(e))
     except Exception as e :
         pass
     
-    return processed_image, original_image
+    return processed_image, img
 
 
 # Countdown 
 # for i in list(range(4))[:: -1]:
 #     print(i+1)
 #     time.sleep(1)
-
-# Code provides more than 10 frames in a second 
-
-
-# def main() :
-#     while True:
-#         bounding_box = {'top': 0, 'left': 0, 'width':  1920, 'height': 1100}
-#         last_time = time.time()
-#         sct = mss()
-#         sct_img = sct.grab(bounding_box)
-#         new_screen = process_img(sct_img)
-#         # print("down")
-#         # pressKey(W)
-#         # time.sleep(2)
-#         # print("up")
-#         # releaseKey(W)
-#         # cv2.imshow('screen', np.array(sct_img))
-#         cv2.imshow('screen', new_screen)
-#         print(f"Loop took seconds {time.time()-last_time}")
-#         last_time = time.time()
-#         if (cv2.waitKey(1) & 0xFF) == ord('q'):
-#             cv2.destroyAllWindows()
-#             break
-
 
 def main():
     while True:
@@ -172,13 +156,11 @@ def main():
         sct_img = sct.grab(bounding_box)
         processed_img, original_img = process_img(sct_img)  # Separate processed and original images
         cv2.imshow('processed_image', processed_img)  # Display processed image
-        cv2.imshow('original_image', original_img)  # Display original image
+        cv2.imshow('original_image', cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB))  # Display original image
         print(f"Loop took seconds {time.time()-last_time}")
         last_time = time.time()
         if (cv2.waitKey(1) & 0xFF) == ord('q'):
             cv2.destroyAllWindows()
             break
-
-
 
 main()
