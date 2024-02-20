@@ -41,9 +41,8 @@ def alexnet(width, height, lr):
                         loss='categorical_crossentropy',
                         learning_rate=0.001)
 
-# Training
-# model = tflearn.DNN(network, checkpoint_path='model_alexnet',
-#                     max_checkpoints=1, tensorboard_verbose=2)
+    model = tflearn.DNN(network, checkpoint_path='model_alexnet',
+                        max_checkpoints=1, tensorboard_verbose=2)
 # model.fit(X, Y, n_epoch=1000, validation_set=0.1, shuffle=True,
 #           show_metric=True, batch_size=64, snapshot_step=200,
 #           snapshot_epoch=False, run_id='alexnet_oxflowers17')
