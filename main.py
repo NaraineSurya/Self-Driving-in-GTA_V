@@ -39,18 +39,17 @@ def main():
         screen = grab_screen(region=(0,0,1920,1100))
         screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
         screen = cv2.resize(screen, (80,60))
-        # screen = np.expand_dims(screen, axis=-1)  # Expand dimensions to make it 3D
         keys = key_check()
         output = keys_to_output(keys)
         output = np.array(output)  # Convert output to numpy array
-        print("Screen shape:", screen.shape, "Screen type:", type(screen))
-        print("Output:", output)
         training_data.append([screen, output])
+    
         # print(f"Loop took seconds {time.time()-last_time}")
         # last_time = time.time()
 
         if len(training_data) % 500 == 0:
             print(len(training_data))
             np.save(file_name, training_data)
+            
 
 main()
