@@ -5,7 +5,6 @@ from grabscreen import grab_screen
 from getkeys import key_check
 import os
 
-
 def keys_to_output(keys):
     output = [0,0,0]
 
@@ -43,11 +42,11 @@ def main():
         output = keys_to_output(keys)
         output = np.array(output)  # Convert output to numpy array
         training_data.append([screen, output])
-    
         # print(f"Loop took seconds {time.time()-last_time}")
         # last_time = time.time()
-
         if len(training_data) % 500 == 0:
+            print("Screen shape:", screen.shape)
+            print("Output:", output)
             print(len(training_data))
             np.save(file_name, training_data)
             
