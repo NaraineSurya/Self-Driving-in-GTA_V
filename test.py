@@ -14,6 +14,7 @@ train_data = np.load('training_data_v2.npy', allow_pickle=True)
 
 # Split the array into X and y
 X = train_data[:, 0]
+print(X[0].shape)
 X = np.array([x.reshape((WIDTH, HEIGHT, 1)) for x in X])
 print(X.shape)
 Y = train_data[:, 1]
