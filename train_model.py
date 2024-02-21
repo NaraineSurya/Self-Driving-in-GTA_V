@@ -16,13 +16,20 @@ train_data = np.load('training_data_v2.npy', allow_pickle=True)
 X = train_data[:, 0]
 # X = np.array([x.reshape((WIDTH, HEIGHT, 1)) for x in X])
 X = np.array([i[0] for i in train_data]).reshape(-1,WIDTH,HEIGHT,1)
-print(X.shape)
-Y = train_data[:, 1]  # Select all rows from the second column (labels)
+Y = np.array([i[1] for i in train_data]).reshape(-1, 3)  # Select all rows from the second column (labels)
 
 model = alexnet(WIDTH, HEIGHT, LR)
 
 # Split the data into training and testing sets
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+
+X_train = tf.convert_to_tensor(X_train, dtype=tf.float32)
+print(X_train.shape)
+print(Y_train.shape)
+Y_train = tf.convert_to_tensor(Y_train, dtype=tf.float32)
+
+X_test = tf.convert_to_tensor(X_test, dtype=tf.float32)
+Y_test = tf.convert_to_tensor(Y_test, dtype=tf.float32)
 
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=LR),
               loss='categorical_crossentropy',

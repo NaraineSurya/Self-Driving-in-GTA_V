@@ -18,4 +18,4 @@ print(X[0].shape)
 X = np.array([x.reshape((WIDTH, HEIGHT, 1)) for x in X])
 print(X.shape)
 Y = train_data[:, 1]
-print(Y.shape)
+print(Y[0].shape)
