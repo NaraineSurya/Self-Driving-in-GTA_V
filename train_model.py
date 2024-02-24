@@ -8,7 +8,7 @@ HEIGHT = 60
 LR = 0.001
 EPOCHS = 8
 
-MODEL_NAME = f"San-self-driving-car {LR} {'alexnet'} {EPOCHS}-epochs.model"
+MODEL_NAME = f"San-self-driving-car_{LR}_alexnet_{EPOCHS}-epochs.model"
 
 train_data = np.load('training_data_v2.npy', allow_pickle=True)
 

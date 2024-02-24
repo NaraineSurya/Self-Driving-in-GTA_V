@@ -18,7 +18,6 @@ EPOCHS = 8
 
 MODEL_NAME = f"San-self-driving-car_{LR}_alexnet_{EPOCHS}-epochs.model"
 
-
 def straight():
     pressKey(W)
     releaseKey(A)
