@@ -3,8 +3,8 @@ from alexnet import alexnet
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 
-WIDTH = 80
-HEIGHT = 60
+WIDTH = 160
+HEIGHT = 120
 LR = 0.001
 EPOCHS = 8
 

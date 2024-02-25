@@ -10,10 +10,11 @@ import os
 import tensorflow as tf
 
 
-WIDTH = 80
-HEIGHT = 60
+WIDTH = 160
+HEIGHT = 120
 LR = 0.001
 EPOCHS = 8
+t_time = 0.08
 
 
 MODEL_NAME = f"San-self-driving-car_{LR}_alexnet_{EPOCHS}-epochs.model"
@@ -24,14 +25,18 @@ def straight():
     releaseKey(D)
 
 def left():
-    pressKey(A)
-    releaseKey(W)
+    pressKey(A) 
+    pressKey(W)
     releaseKey(D)
+    time.sleep(t_time)
+    releaseKey(A)
 
 def right():
     pressKey(D)
-    releaseKey(W)
+    pressKey(W)
     releaseKey(A)
+    time.sleep(t_time)
+    releaseKey(D)
 
 model = alexnet(WIDTH, HEIGHT, 1)
 
@@ -50,7 +55,7 @@ def main():
         if not paused:
             screen = grab_screen(region=(0,0,1920,1100))
             screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-            screen = cv2.resize(screen, (80,60))
+            screen = cv2.resize(screen, (WIDTH,HEIGHT))
 
             print(f"Loop took seconds {time.time()-last_time}")
             last_time = time.time()
@@ -58,15 +63,20 @@ def main():
 
             prediction = model.predict([screen.reshape(-1, WIDTH, HEIGHT, 1)])[0]
 
-            moves = list(np.around(prediction))
-            print(moves, prediction)
+            # moves = list(np.around(prediction))
+            print(prediction)
 
-            if moves == [1,0,0]:
-                left()
-            elif moves == [0,1,0]:
+            turn_thresh = 0.75
+            fwd_thresh = 0.7
+
+            if prediction[1] > fwd_thresh:
                 straight()
-            elif moves == [0,0,1]:
+            elif prediction[0] > turn_thresh:
+                left()
+            elif prediction[2] > turn_thresh:
                 right()
+            else :
+                 straight()
             
         keys = key_check()
 

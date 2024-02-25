@@ -37,7 +37,7 @@ def main():
 
         screen = grab_screen(region=(0,0,1920,1100))
         screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-        screen = cv2.resize(screen, (80,60)).reshape(60,80,1) # Reshape is done to provide correct dimension
+        screen = cv2.resize(screen, (160,120)).reshape(120,160,1) # Reshape is done to provide correct dimension
 
         keys = key_check()
         output = keys_to_output(keys)
