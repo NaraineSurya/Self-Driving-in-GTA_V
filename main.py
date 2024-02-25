@@ -32,18 +32,21 @@ def main():
     for i in list(range(4))[::-1]:
         print(i+1)
         time.sleep(1)
-    # last_time = time.time()
+    last_time = time.time()
     while True:
-        # bounding_box = {'top': 0, 'left': 0, 'width':  1920, 'height': 1100}
+
         screen = grab_screen(region=(0,0,1920,1100))
         screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-        screen = cv2.resize(screen, (80,60))
+        screen = cv2.resize(screen, (80,60)).reshape(60,80,1) # Reshape is done to provide correct dimension
+
         keys = key_check()
         output = keys_to_output(keys)
-        output = np.array(output)  # Convert output to numpy array
+        output = np.array(output) # Convert output to numpy array
+
         training_data.append([screen, output])
-        # print(f"Loop took seconds {time.time()-last_time}")
-        # last_time = time.time()
+        print(f"Loop took seconds {time.time()-last_time}")
+        last_time = time.time()
+        
         if len(training_data) % 500 == 0:
             print("Screen shape:", screen.shape)
             print("Output:", output)
