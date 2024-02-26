@@ -2,8 +2,6 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from random import shuffle
-import cv2
-
 
 train_data = np.load('training_data.npy', allow_pickle=True)
 print(len(train_data))

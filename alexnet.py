@@ -7,7 +7,7 @@ https://towardsdatascience.com/implementing-alexnet-cnn-architecture-using-tenso
 
 # Sequential layer for alexnet
 
-def alexnet(width, height, lr):
+def alexnet(width, height, output):
     model = tf.keras.Sequential([
         tf.keras.layers.Conv2D(filters=96, kernel_size=3, activation='relu', input_shape=(width, height, 1)),
         tf.keras.layers.MaxPooling2D(pool_size=2, strides=2),
@@ -21,7 +21,10 @@ def alexnet(width, height, lr):
         tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(1024, activation='tanh'),
         tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(3, activation='softmax')
+        tf.keras.layers.Dense(1024, activation='tanh'),
+        tf.keras.layers.Dropout(0.5),
+        # Output has been changed to different keys 
+        tf.keras.layers.Dense(output, activation='softmax')
 
     ])
 

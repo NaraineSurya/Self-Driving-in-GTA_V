@@ -3,12 +3,12 @@ from alexnet import alexnet
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 
-WIDTH = 160
-HEIGHT = 120
+WIDTH = 480
+HEIGHT = 360
 LR = 0.001
-EPOCHS = 8
+EPOCHS = 13
 
-MODEL_NAME = f"San-self-driving-car {LR} {'alexnet'} {EPOCHS}-epochs.model"
+MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}-epochs.model"
 
 train_data = np.load('training_data_v2.npy', allow_pickle=True)
 
