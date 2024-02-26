@@ -130,8 +130,11 @@ def main(file_name, starting_value):
         if 'Z' in keys:
             if paused:
                 paused = False
+                for i in list(range(4))[::-1]:
+                    print(i+1)
+                    time.sleep(1)
                 print('Resuming')
-                time.sleep(1)
+                time.sleep(0.5)
             else:
                 print('Pausing!')
                 paused = True
