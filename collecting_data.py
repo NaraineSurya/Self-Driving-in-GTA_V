@@ -107,6 +107,7 @@ def main(file_name, starting_value):
             output = keys_to_output(keys)
             training_data.append([screen,output])
 
+            print(output)
             print('loop took {} seconds'.format(time.time()-last_time))
             last_time = time.time()
 ##            cv2.imshow('window',cv2.resize(screen,(640,360)))
@@ -117,12 +118,12 @@ def main(file_name, starting_value):
             if len(training_data) % 100 == 0:
                 print(len(training_data))
                 
-                if len(training_data) == 500:
-                    np.save(file_name,training_data)
-                    print('SAVED')
-                    training_data = []
-                    starting_value += 1
-                    file_name = 'training_data_v{}.npy'.format(starting_value)
+            if len(training_data) % 500 == 0:
+                np.save(file_name,training_data)
+                print('SAVED')
+                # training_data = []
+                # starting_value += 1
+                # file_name = 'training_data_v{}.npy'.format(starting_value)
 
                     
         keys = key_check()
