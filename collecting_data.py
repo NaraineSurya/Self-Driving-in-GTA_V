@@ -25,10 +25,10 @@ import time
 from getkeys import key_check
 import os
 
-w = [1,0,0,0,0,0,0,0,0]
-s = [0,1,0,0,0,0,0,0,0]
-a = [0,0,1,0,0,0,0,0,0]
-d = [0,0,0,1,0,0,0,0,0]
+w  = [1,0,0,0,0,0,0,0,0]
+s  = [0,1,0,0,0,0,0,0,0]
+a  = [0,0,1,0,0,0,0,0,0]
+d  = [0,0,0,1,0,0,0,0,0]
 wa = [0,0,0,0,1,0,0,0,0]
 wd = [0,0,0,0,0,1,0,0,0]
 sa = [0,0,0,0,0,0,1,0,0]
@@ -72,9 +72,9 @@ def keys_to_output(keys):
         output = w
     elif 'S' in keys:
         output = s
-    elif 'A' in keys:
+    elif 'A' in keys or 'left' in keys:
         output = a
-    elif 'D' in keys:
+    elif 'D' in keys or 'right' in keys: 
         output = d
     else:
         output = nk
@@ -110,10 +110,10 @@ def main(file_name, starting_value):
             print(output)
             print('loop took {} seconds'.format(time.time()-last_time))
             last_time = time.time()
-##            cv2.imshow('window',cv2.resize(screen,(640,360)))
-##            if cv2.waitKey(25) & 0xFF == ord('q'):
-##                cv2.destroyAllWindows()
-##                break
+            ##            cv2.imshow('window',cv2.resize(screen,(640,360)))
+            ##            if cv2.waitKey(25) & 0xFF == ord('q'):
+            ##                cv2.destroyAllWindows()
+            ##                break
 
             if len(training_data) % 100 == 0:
                 print(len(training_data))
@@ -127,7 +127,7 @@ def main(file_name, starting_value):
 
                     
         keys = key_check()
-        if 'Z' in keys:
+        if 'B' in keys:
             if paused:
                 paused = False
                 for i in list(range(4))[::-1]:

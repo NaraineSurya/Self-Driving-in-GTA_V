@@ -17,10 +17,10 @@ OUTPUT = 9
 
 MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}-epochs.model"
 
-w = [1,0,0,0,0,0,0,0,0]
-s = [0,1,0,0,0,0,0,0,0]
-a = [0,0,1,0,0,0,0,0,0]
-d = [0,0,0,1,0,0,0,0,0]
+w  = [1,0,0,0,0,0,0,0,0]
+s  = [0,1,0,0,0,0,0,0,0]
+a  = [0,0,1,0,0,0,0,0,0]
+d  = [0,0,0,1,0,0,0,0,0]
 wa = [0,0,0,0,1,0,0,0,0]
 wd = [0,0,0,0,0,1,0,0,0]
 sa = [0,0,0,0,0,0,1,0,0]
@@ -127,12 +127,12 @@ def main():
             elif np.argmax(prediction) == np.argmax(sd):
                 rev_right()
             elif np.argmax(prediction) == np.argmax(nk):
-                nk()
+                nokeys()
             
             
         keys = key_check()
 
-        if 'Z' in keys :
+        if 'B' in keys :
             if paused :
                 paused = False
                 time.sleep(1)
