@@ -10,7 +10,7 @@ The data should be first person view data with the *HOOD CAMERA* in an armored K
 Driving style should be at pace, drive as fast as reasonably possible while avoiding objects and staying on road to the best of
 your ability. There may be times when you drive off road to avoid things, this is fine, just get back on! 
 
-Press "T" to pause data gathering. When you're done, press T, alt-tab out, and close the script. 
+Press "Z" to pause data gathering. When you're done, press T, alt-tab out, and close the script. 
 
 I will check all data for fitment to AI (basically how close does my AI predict the data you submit) to validate 
 against people trying to submit bad data. 
@@ -121,10 +121,11 @@ def main(file_name, starting_value):
             if len(training_data) % 500 == 0:
                 np.save(file_name,training_data)
                 print('SAVED')
-                # training_data = []
-                # starting_value += 1
-                # file_name = 'training_data_v{}.npy'.format(starting_value)
 
+            if len(training_data) % 7500 == 0:
+                training_data = []
+                starting_value += 1
+                file_name = 'training_data_v{}.npy'.format(starting_value)
                     
         keys = key_check()
         if 'B' in keys:

@@ -1,21 +1,24 @@
 import numpy as np 
 from alexnet import alexnet
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
+# import tensorflow as tf
+from random import shuffle
 
 WIDTH = 480
 HEIGHT = 360
 LR = 0.001
-EPOCHS = 13
+EPOCHS = 9
+OUTPUT = 9
+MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}_epochs.model"
 
-MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}-epochs.model"
+# model = alexnet(WIDTH, HEIGHT, LR)
 
-train_data = np.load('training_data_v2.npy', allow_pickle=True)
+no_data = 9
 
-# Split the array into X and y
-X = train_data[:, 0]
-print(X[0].shape)
-X = np.array([x.reshape((WIDTH, HEIGHT, 1)) for x in X])
+
+train_data = np.load('Dataset/training_data_v1.npy', allow_pickle=True)
+X = np.array([i[0] for i in train_data]).reshape(-1,WIDTH,HEIGHT,3)
+Y = np.array([i[1] for i in train_data]).reshape(-1, OUTPUT) 
 print(X.shape)
-Y = train_data[:, 1]
-print(Y[0].shape)
+print(Y.shape)
+        

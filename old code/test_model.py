@@ -17,7 +17,7 @@ EPOCHS = 8
 t_time = 0.08
 
 
-MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}-epochs.model"
+MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}_epochs.model"
 
 def straight():
     pressKey(W)
