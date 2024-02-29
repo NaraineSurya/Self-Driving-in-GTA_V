@@ -3,29 +3,26 @@ import cv2
 import time
 from grabscreen import grab_screen
 from directkeys import pressKey, releaseKey, A, W, S, D
-from alexnet import alexnet
 from getkeys import key_check
-import tensorflow as tf
-
+import torch
+import torch.nn.functional as F
+from torchvision.transforms import ToTensor
 
 WIDTH = 480
 HEIGHT = 360
-LR = 0.001
-EPOCHS = 8
 t_time = 0.08
-OUTPUT = 9
 
-MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}_epochs.model"
+MODEL_NAME = f"GTA_V_alexnet.model"  # Assuming you have saved the PyTorch model as "GTA_V_alexnet.model"
 
-w  = [1,0,0,0,0,0,0,0,0]
-s  = [0,1,0,0,0,0,0,0,0]
-a  = [0,0,1,0,0,0,0,0,0]
-d  = [0,0,0,1,0,0,0,0,0]
-wa = [0,0,0,0,1,0,0,0,0]
-wd = [0,0,0,0,0,1,0,0,0]
-sa = [0,0,0,0,0,0,1,0,0]
-sd = [0,0,0,0,0,0,0,1,0]
-nk = [0,0,0,0,0,0,0,0,1]
+w  = torch.tensor([1,0,0,0,0,0,0,0,0])
+s  = torch.tensor([0,1,0,0,0,0,0,0,0])
+a  = torch.tensor([0,0,1,0,0,0,0,0,0])
+d  = torch.tensor([0,0,0,1,0,0,0,0,0])
+wa = torch.tensor([0,0,0,0,1,0,0,0,0])
+wd = torch.tensor([0,0,0,0,0,1,0,0,0])
+sa = torch.tensor([0,0,0,0,0,0,1,0,0])
+sd = torch.tensor([0,0,0,0,0,0,0,1,0])
+nk = torch.tensor([0,0,0,0,0,0,0,0,1])
 
 def straight():
     pressKey(W)
@@ -82,10 +79,9 @@ def nokeys():
     releaseKey(D)
 
 
-
-model = alexnet(WIDTH, HEIGHT, OUTPUT)
-
-model = tf.keras.models.load_model(MODEL_NAME)
+# Load the PyTorch model
+model = torch.load(MODEL_NAME)
+model.eval()  # Set model to evaluation mode
 
 def main():
 
@@ -101,14 +97,15 @@ def main():
             screen = grab_screen(region=(0,0,1920,1100))
             screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
             screen = cv2.resize(screen, (WIDTH,HEIGHT))
+            screen = ToTensor()(screen).unsqueeze(0)  # Convert to tensor and add batch dimension
 
             print(f"Loop took seconds {time.time()-last_time}")
             last_time = time.time()
 
-            prediction = model.predict([screen.reshape(-1, WIDTH, HEIGHT, 1)])[0]
+            with torch.no_grad():
+                prediction = F.softmax(model(screen), dim=1).squeeze().numpy()  # Perform prediction and convert to numpy
 
             print(prediction)
-
 
             if np.argmax(prediction) == np.argmax(w):
                 straight()

@@ -5,40 +5,85 @@ from grabscreen import grab_screen
 from directkeys import pressKey, releaseKey, A, W, S, D
 from alexnet import alexnet
 from getkeys import key_check
-import os
-
 import tensorflow as tf
 
 
-WIDTH = 160
-HEIGHT = 120
+WIDTH = 480
+HEIGHT = 360
 LR = 0.001
 EPOCHS = 8
 t_time = 0.08
-
+OUTPUT = 9
 
 MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}_epochs.model"
 
+w  = [1,0,0,0,0,0,0,0,0]
+s  = [0,1,0,0,0,0,0,0,0]
+a  = [0,0,1,0,0,0,0,0,0]
+d  = [0,0,0,1,0,0,0,0,0]
+wa = [0,0,0,0,1,0,0,0,0]
+wd = [0,0,0,0,0,1,0,0,0]
+sa = [0,0,0,0,0,0,1,0,0]
+sd = [0,0,0,0,0,0,0,1,0]
+nk = [0,0,0,0,0,0,0,0,1]
+
 def straight():
     pressKey(W)
+    releaseKey(S)
     releaseKey(A)
     releaseKey(D)
 
 def left():
     pressKey(A) 
-    pressKey(W)
+    releaseKey(W)
+    releaseKey(S)
     releaseKey(D)
-    time.sleep(t_time)
-    releaseKey(A)
 
 def right():
     pressKey(D)
-    pressKey(W)
+    releaseKey(W)
+    releaseKey(S)
     releaseKey(A)
-    time.sleep(t_time)
+
+def reverse():
+    pressKey(S)
+    releaseKey(W)
+    releaseKey(A)
     releaseKey(D)
 
-model = alexnet(WIDTH, HEIGHT, 1)
+def fwd_left():
+    pressKey(W)
+    pressKey(A) 
+    releaseKey(D)
+    releaseKey(S)
+
+def fwd_right():
+    pressKey(W)
+    pressKey(D) 
+    releaseKey(S)
+    releaseKey(A)
+
+def rev_left():
+    pressKey(S)
+    pressKey(A) 
+    releaseKey(D)
+    releaseKey(W)
+
+def rev_right():
+    pressKey(S)
+    pressKey(D) 
+    releaseKey(W)
+    releaseKey(A)
+
+def nokeys():
+    releaseKey(W) 
+    releaseKey(S)
+    releaseKey(A)
+    releaseKey(D)
+
+
+
+model = alexnet(WIDTH, HEIGHT, OUTPUT)
 
 model = tf.keras.models.load_model(MODEL_NAME)
 
@@ -60,27 +105,34 @@ def main():
             print(f"Loop took seconds {time.time()-last_time}")
             last_time = time.time()
 
-
             prediction = model.predict([screen.reshape(-1, WIDTH, HEIGHT, 1)])[0]
 
-            # moves = list(np.around(prediction))
             print(prediction)
 
-            turn_thresh = 0.75
-            fwd_thresh = 0.7
 
-            if prediction[1] > fwd_thresh:
+            if np.argmax(prediction) == np.argmax(w):
                 straight()
-            elif prediction[0] > turn_thresh:
+            elif np.argmax(prediction) == np.argmax(s):
+                reverse()
+            elif np.argmax(prediction) == np.argmax(a):
                 left()
-            elif prediction[2] > turn_thresh:
+            elif np.argmax(prediction) == np.argmax(d):
                 right()
-            else :
-                 straight()
+            elif np.argmax(prediction) == np.argmax(wa):
+                fwd_left()
+            elif np.argmax(prediction) == np.argmax(wd):
+                fwd_right()
+            elif np.argmax(prediction) == np.argmax(sa):
+                rev_left()
+            elif np.argmax(prediction) == np.argmax(sd):
+                rev_right()
+            elif np.argmax(prediction) == np.argmax(nk):
+                nokeys()
+            
             
         keys = key_check()
 
-        if 'T' in keys :
+        if 'B' in keys :
             if paused :
                 paused = False
                 time.sleep(1)

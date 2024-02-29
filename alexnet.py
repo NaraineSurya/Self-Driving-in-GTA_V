@@ -1,31 +1,39 @@
-import tensorflow as tf
+import torch
+import torch.nn as nn
 
-"""
-Implementing AlexNet CNN Architecture Using TensorFlow 2.0+ and Keras
-https://towardsdatascience.com/implementing-alexnet-cnn-architecture-using-tensorflow-2-0-and-keras-2113e090ad98
-"""
+class AlexNet(nn.Module):
+    def __init__(self, num_classes=9):
+        super(AlexNet, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 96, kernel_size=3, stride=1, padding=0),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.BatchNorm2d(96),
+            nn.Conv2d(96, 96, kernel_size=5, stride=1, padding=0),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.BatchNorm2d(96),
+            nn.Conv2d(96, 96, kernel_size=3, stride=1, padding=0),
+            nn.ReLU(inplace=True)
+        )
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(96 * 3 * 3, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.5),
+            nn.Linear(512, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.5),
+            nn.Linear(512, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.5),
+            nn.Linear(512, num_classes)
+        )
 
-# Sequential layer for alexnet
+    def forward(self, x):
+        x = self.features(x)
+        x = self.classifier(x)
+        return x
 
-def alexnet(width, height, output):
-    model = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(filters=96, kernel_size=3, activation='relu', input_shape=(width, height, 3)),
-        tf.keras.layers.MaxPooling2D(pool_size=2, strides=2),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Conv2D(filters=96, kernel_size=5, activation='relu'),
-        tf.keras.layers.MaxPooling2D(pool_size=2, strides=2),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Conv2D(filters=96, kernel_size=3, activation='relu'),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(512, activation='relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(512, activation='relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(512, activation='relu'),
-        tf.keras.layers.Dropout(0.5),
-        # Output has been changed to different keys 
-        tf.keras.layers.Dense(9, activation='softmax')
-
-    ])
-
-    return model
+# Instantiate the model
+model = AlexNet()
