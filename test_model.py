@@ -11,8 +11,10 @@ from torchvision.transforms import ToTensor
 WIDTH = 480
 HEIGHT = 360
 t_time = 0.08
+LR = 0.001
+EPOCHS = 9
 
-MODEL_NAME = f"GTA_V_alexnet.model"  # Assuming you have saved the PyTorch model as "GTA_V_alexnet.model"
+MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}_epochs.pth"  # Assuming you have saved the PyTorch model as "GTA_V_alexnet.model"
 
 w  = torch.tensor([1,0,0,0,0,0,0,0,0])
 s  = torch.tensor([0,1,0,0,0,0,0,0,0])
