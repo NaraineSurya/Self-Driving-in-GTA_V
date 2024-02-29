@@ -41,13 +41,3 @@ shuffle(final_data)
 print(len(final_data))
 final_data_array = np.array(final_data, dtype=object)
 np.save('training_data_v2.npy',final_data_array)
-
-
-# for data in train_data:
-#     img = data[0]
-#     choice = data[1]
-#     cv2.imshow('test',img)
-#     print(choice)
-#     if cv2.waitKey(25)  & 0xFF == ord('q'):
-#         cv2.destroyAllWindows()
-#         break

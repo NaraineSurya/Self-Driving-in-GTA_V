@@ -47,6 +47,15 @@ train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=LR)
 
+# Check if GPU is available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Move model to GPU
+model.to(device)
+
+# Move input tensors to GPU
+inputs, labels = inputs.to(device), labels.to(device)
+
 # Training loop
 for epoch in range(EPOCHS):
     running_loss = 0.0
