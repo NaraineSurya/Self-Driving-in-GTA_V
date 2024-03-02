@@ -18,7 +18,7 @@ class AlexNet(nn.Module):
         )
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(96 * 3 * 3, 512),
+            nn.Linear(96*85*115, 512),
             nn.ReLU(inplace=True),
             nn.Dropout(0.5),
             nn.Linear(512, 512),
@@ -36,4 +36,11 @@ class AlexNet(nn.Module):
         return x
 
 # Instantiate the model
-model = AlexNet()
+# model = AlexNet()
+
+# WIDTH = 480
+# HEIGHT = 360
+
+# test_img = torch.rand(1, 3, HEIGHT, WIDTH)
+
+# print(model(test_img).shape)
