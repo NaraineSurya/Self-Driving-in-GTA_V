@@ -1,4 +1,5 @@
 import numpy as np
+import os
 from alexnet import AlexNet
 from sklearn.model_selection import train_test_split
 import torch
@@ -13,11 +14,23 @@ import matplotlib.pyplot as plt
 WIDTH = 480
 HEIGHT = 360
 LR = 3e-4
-EPOCHS = 6
+EPOCHS = 7
 OUTPUT = 9
-MODEL_NAME = f"GTA_V_{LR}_alexnet_{EPOCHS}_epochs.pth"
 
 model = AlexNet(num_classes=OUTPUT).to('cuda')
+LAST_EPOCH = 0
+
+# check for saved model
+if len(os.listdir('models')) > 1:
+    last_model = sorted(os.listdir('models'))[-1]
+    model.load_state_dict(torch.load(f'models/{last_model}'))
+    LAST_EPOCH = int(last_model.split('_')[-1].split('.')[0])
+    print('model loaded')
+
+if len(os.listdir('models')) == 1:
+    model.load_state_dict(torch.load(f'models/{os.listdir("models")[0]}'))
+    LAST_EPOCH = int(os.listdir('models')[0].split('_')[-1].split('.')[0])
+    print('model loaded')
 
 total_params = sum(
 	param.numel() for param in model.parameters()
@@ -25,7 +38,7 @@ total_params = sum(
 
 print(total_params)
 
-no_data = 3
+no_data = 6
 
 TOTAL_DATA = []
 
@@ -46,8 +59,6 @@ class data(Dataset):
     def __getitem__(self, index):
         return torch.tensor(TOTAL_DATA[index][0], dtype=torch.float32).reshape(3, HEIGHT, WIDTH), torch.tensor(TOTAL_DATA[index][1], dtype=torch.float32).reshape(OUTPUT)
 
-
-# Create DataLoader using data generator for training data
 train_data = data()
 loader = DataLoader(train_data, batch_size=4)
 
@@ -58,10 +69,11 @@ optimizer = optim.Adam(model.parameters(), lr=LR)
 
 print('starting training')
 
-# Define scaler for automatic mixed precision
 scaler = torch.cuda.amp.GradScaler()
 
 LOSS_LOG = []
+
+EPOCHS -= LAST_EPOCH
 
 for epoch in range(EPOCHS):
     for i, (x, y) in enumerate(tqdm(loader)):
@@ -70,7 +82,6 @@ for epoch in range(EPOCHS):
 
         optimizer.zero_grad()
         
-        # Automatic mixed precision training
         with autocast():
             outputs = model(x)
             loss = criterion(outputs, y)
@@ -83,6 +94,5 @@ for epoch in range(EPOCHS):
             print(f'Epoch: {epoch}, Loss: {loss.item()}')
     plt.plot(LOSS_LOG)
     plt.show()
+    torch.save(model.state_dict(), f'models/model_{epoch}.pth')
 
-    # Save the trained model
-    torch.save(model.state_dict(), MODEL_NAME)

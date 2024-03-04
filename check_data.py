@@ -3,7 +3,7 @@ from collections import Counter
 from random import shuffle
 import cv2
 
-train_data = np.load('d:/surya/Dataset/training_data_v4.npy', allow_pickle=True)
+train_data = np.load('../Dataset/training_data_v3.npy', allow_pickle=True)
 
 WIDTH = 480
 HEIGHT = 360
