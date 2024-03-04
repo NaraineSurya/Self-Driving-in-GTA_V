@@ -41,7 +41,7 @@ HEIGHT = 360
 starting_value = 1
 
 while True:
-    file_name = 'training_data_v{}.npy'.format(starting_value)
+    file_name = 'Dataset/training_data_v{}.npy'.format(starting_value)
 
     if os.path.isfile(file_name):
         print('File exists, moving along',starting_value)
@@ -117,6 +117,7 @@ def main(file_name, starting_value):
 
             if len(training_data) % 100 == 0:
                 print(len(training_data))
+                np.save(file_name,training_data)
                 
             if len(training_data) % 500 == 0:
                 np.save(file_name,training_data)
@@ -125,7 +126,7 @@ def main(file_name, starting_value):
             if len(training_data) % 7500 == 0:
                 training_data = []
                 starting_value += 1
-                file_name = 'training_data_v{}.npy'.format(starting_value)
+                file_name = 'Dataset/training_data_v{}.npy'.format(starting_value)
                     
         keys = key_check()
         if 'B' in keys:
