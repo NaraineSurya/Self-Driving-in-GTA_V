@@ -1,0 +1,8 @@
+GTA_V setup file
+
+
+conda create --name gta python=3.9 numpy 
+conda init gta
+conda activate gta
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+py 

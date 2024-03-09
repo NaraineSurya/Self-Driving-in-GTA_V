@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from alexnet import AlexNet
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
 from tqdm import tqdm
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 WIDTH = 480
 HEIGHT = 360
 LR = 3e-4
-EPOCHS = 7
+EPOCHS = 10
 OUTPUT = 9
 
 model = AlexNet(num_classes=OUTPUT).to('cuda')
