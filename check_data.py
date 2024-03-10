@@ -3,15 +3,17 @@ from collections import Counter
 from random import shuffle
 import cv2
 
-train_data = np.load('../Dataset/training_data_v3.npy', allow_pickle=True)
+train_data = np.load('Dataset/training_data_v1.npy', allow_pickle=True)
+# train_data = np.load('d://surya/Dataset', allow_pickle=True)
 
-WIDTH = 480
-HEIGHT = 360
+
+WIDTH = 320
+HEIGHT = 240
 
 for data in train_data:
     img = data[0]
     choice = data[1]
-    # screen = cv2.resize(screen, (WIDTH,HEIGHT))
+    # screen = cv2.resize(screen, (WIDTH,HEIGHT))ww
     cv2.imshow('test',img)
 
     print(choice)

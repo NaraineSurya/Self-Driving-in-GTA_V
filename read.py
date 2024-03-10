@@ -1,3 +1,14 @@
-import numpy as np 
+import torch 
+import numpy as np
 
-print(np.load('training_data.npy', allow_pickle=True))
+w  = [1,0,0,0,0,0,0,0,0]
+s  = [0,1,0,0,0,0,0,0,0]
+a  = [0,0,1,0,0,0,0,0,0]
+d  = [0,0,0,1,0,0,0,0,0]
+wa = [0,0,0,0,1,0,0,0,0]
+wd = [0,0,0,0,0,1,0,0,0]
+sa = [0,0,0,0,0,0,1,0,0]
+sd = [0,0,0,0,0,0,0,1,0]
+nk = [0,0,0,0,0,0,0,0,1]
+
+print(np.argmax(nk))

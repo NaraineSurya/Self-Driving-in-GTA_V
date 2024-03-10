@@ -35,8 +35,8 @@ sa = [0,0,0,0,0,0,1,0,0]
 sd = [0,0,0,0,0,0,0,1,0]
 nk = [0,0,0,0,0,0,0,0,1]
 
-WIDTH = 480
-HEIGHT = 360
+WIDTH = 320
+HEIGHT = 240
 
 starting_value = 1
 
@@ -104,26 +104,23 @@ def main(file_name, starting_value):
             screen = cv2.cvtColor(screen, cv2.COLOR_BGR2RGB)
             
             keys = key_check()
-            output = keys_to_output(keys)
+            output = np.array(keys_to_output(keys))
             training_data.append([screen,output])
 
             print(output)
             print('loop took {} seconds'.format(time.time()-last_time))
             last_time = time.time()
-            ##            cv2.imshow('window',cv2.resize(screen,(640,360)))
-            ##            if cv2.waitKey(25) & 0xFF == ord('q'):
-            ##                cv2.destroyAllWindows()
-            ##                break
 
             if len(training_data) % 100 == 0:
                 print(len(training_data))
-                np.save(file_name,training_data)
                 
-            if len(training_data) % 500 == 0:
+            if len(training_data) % 700 == 0:
                 np.save(file_name,training_data)
                 print('SAVED')
 
             if len(training_data) % 7500 == 0:
+                np.save(file_name,training_data)
+                print('SAVED')
                 training_data = []
                 starting_value += 1
                 file_name = 'Dataset/training_data_v{}.npy'.format(starting_value)
