@@ -8,8 +8,8 @@ from getkeys import key_check
 import tensorflow as tf
 
 
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 256
+HEIGHT = 144
 LR = 0.001
 EPOCHS = 8
 t_time = 0.08

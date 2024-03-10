@@ -1,21 +1,3 @@
-'''
-This file is meant to collect data for the latest model.
-
-*** DO NOT BALANCE THIS DATA ***
-
-Leave the data in raw form. It must be raw so I can use it for recurrent layers/motion/optical flow...etc. 
-
-The data should be first person view data with the *HOOD CAMERA* in an armored Karuma. 
-
-Driving style should be at pace, drive as fast as reasonably possible while avoiding objects and staying on road to the best of
-your ability. There may be times when you drive off road to avoid things, this is fine, just get back on! 
-
-Press "Z" to pause data gathering. When you're done, press T, alt-tab out, and close the script. 
-
-I will check all data for fitment to AI (basically how close does my AI predict the data you submit) to validate 
-against people trying to submit bad data. 
-
-'''
 # create_training_data.py
 
 import numpy as np
@@ -35,8 +17,10 @@ sa = [0,0,0,0,0,0,1,0,0]
 sd = [0,0,0,0,0,0,0,1,0]
 nk = [0,0,0,0,0,0,0,0,1]
 
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 256
+HEIGHT = 144
+WIDTH = 256
+HEIGHT = 144
 
 starting_value = 1
 
@@ -96,7 +80,7 @@ def main(file_name, starting_value):
         
         if not paused:
             # windowed mode, this is 1920x1080, but you can change this to suit whatever res you're running.
-            screen = grab_screen(region=(0,0,1920,1120))
+            screen = grab_screen(region=(0,0,1600,900))
             last_time = time.time()
             # resize to something a bit more acceptable for a CNN
             screen = cv2.resize(screen, (WIDTH,HEIGHT))
@@ -112,6 +96,8 @@ def main(file_name, starting_value):
             last_time = time.time()
 
             if len(training_data) % 100 == 0:
+                np.save(file_name,training_data)
+                print('SAVED')
                 print(len(training_data))
                 
             if len(training_data) % 700 == 0:

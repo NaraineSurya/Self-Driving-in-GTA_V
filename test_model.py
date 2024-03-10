@@ -9,8 +9,8 @@ import torch.nn.functional as F
 from torchvision.transforms import ToTensor
 from alexnet import AlexNet
 
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 256
+HEIGHT = 144
 t_time = 0.08
 LR = 0.001
 EPOCHS = 9

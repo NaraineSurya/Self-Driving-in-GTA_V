@@ -6,15 +6,14 @@ import cv2
 train_data = np.load('Dataset/training_data_v1.npy', allow_pickle=True)
 # train_data = np.load('d://surya/Dataset', allow_pickle=True)
 
-
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 256
+HEIGHT = 144
 
 for data in train_data:
     img = data[0]
     choice = data[1]
-    # screen = cv2.resize(screen, (WIDTH,HEIGHT))ww
-    cv2.imshow('test',img)
+    img_resized = cv2.resize(img, (WIDTH, HEIGHT))
+    cv2.imshow('test', img_resized)
 
     print(choice)
     if cv2.waitKey(25) & 0xFF == ord('q'):

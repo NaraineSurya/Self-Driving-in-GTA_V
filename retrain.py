@@ -11,8 +11,8 @@ from random import shuffle
 from torch.cuda.amp import autocast
 import matplotlib.pyplot as plt
 
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 256
+HEIGHT = 144
 LR = 3e-4
 EPOCHS = 10
 OUTPUT = 9

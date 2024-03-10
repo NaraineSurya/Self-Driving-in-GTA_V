@@ -4,8 +4,8 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from random import shuffle
 
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 256
+HEIGHT = 144
 LR = 0.001
 EPOCHS = 9
 OUTPUT = 9

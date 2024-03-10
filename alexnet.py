@@ -43,8 +43,8 @@ class AlexNet(nn.Module):
 # Instantiate the model
 model = AlexNet()
 
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 256
+HEIGHT = 144
 
 test_img = torch.rand(1, 3, HEIGHT, WIDTH)
 
