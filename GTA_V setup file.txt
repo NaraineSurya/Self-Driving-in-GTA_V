@@ -4,5 +4,9 @@ GTA_V setup file
 conda create --name gta python=3.9 numpy 
 conda init gta
 conda activate gta
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+conda install pytorch-cuda-12.1 -c pytorch -c nvidia -y
+conda install pytorch torchvision torchaudio -c pytorch -c nvidia -y
+pip install opencv-python
+pip install pywin32
+pip install scikit-learn
 pip install numpy==1.21.0

@@ -103,7 +103,6 @@ def main(file_name, starting_value):
             if len(training_data) % 700 == 0:
                 np.save(file_name,training_data)
                 print('SAVED')
-
             if len(training_data) % 7500 == 0:
                 np.save(file_name,training_data)
                 print('SAVED')
